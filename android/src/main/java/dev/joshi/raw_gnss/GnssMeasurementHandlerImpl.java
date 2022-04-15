@@ -1,5 +1,8 @@
 package dev.joshi.raw_gnss;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.GnssClock;
 import android.location.GnssMeasurement;
 import android.location.GnssMeasurementsEvent;
@@ -10,6 +13,7 @@ import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,30 +24,38 @@ import io.flutter.plugin.common.EventChannel;
 public class GnssMeasurementHandlerImpl implements EventChannel.StreamHandler {
     private static final String TAG = "GNSS_MEASURE";
 
-    LocationManager locationManager;
+    final LocationManager locationManager;
     GnssMeasurementsEvent.Callback listener;
     private final Handler uiThreadHandler = new Handler(Looper.getMainLooper());
+    private final Context _context;
+    private Boolean _hasPermissions = false;
 
-    GnssMeasurementHandlerImpl(LocationManager manager) {
+    GnssMeasurementHandlerImpl(LocationManager manager, Context context) {
         locationManager = manager;
+        _context = context;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     public void onListen(Object arguments, EventChannel.EventSink events) {
         Log.d(TAG, "onListen");
         listener = createSensorEventListener(events);
-        locationManager.registerGnssMeasurementsCallback(listener);
+        _hasPermissions = ActivityCompat.checkSelfPermission(_context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED;
+        if (_hasPermissions) {
+            Log.d(TAG, "Do't has permission - ACCESS_FINE_LOCATION.");
+            return;
+        }
+        locationManager.registerGnssMeasurementsCallback(listener, uiThreadHandler);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     public void onCancel(Object arguments) {
         Log.d(TAG, "onCancel");
         locationManager.unregisterGnssMeasurementsCallback(listener);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    @RequiresApi(api = Build.VERSION_CODES.R)
     GnssMeasurementsEvent.Callback createSensorEventListener(final EventChannel.EventSink events) {
         return new GnssMeasurementsEvent.Callback() {
             @Override
