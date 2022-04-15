@@ -26,7 +26,7 @@ public class RawGnssPlugin implements FlutterPlugin  {
   private LocationManager locationManager;
   private Context context;
 
-  @RequiresApi(api = Build.VERSION_CODES.N)
+  @RequiresApi(api = Build.VERSION_CODES.R)
   @Override
   public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
     context = flutterPluginBinding.getApplicationContext();
