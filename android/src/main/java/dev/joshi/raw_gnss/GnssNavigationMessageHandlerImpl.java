@@ -24,7 +24,7 @@ public class GnssNavigationMessageHandlerImpl implements EventChannel.StreamHand
         locationManager = manager;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     public void onListen(Object arguments, EventChannel.EventSink events) {
         Log.d(TAG, "onListen");
@@ -32,14 +32,14 @@ public class GnssNavigationMessageHandlerImpl implements EventChannel.StreamHand
         locationManager.registerGnssNavigationMessageCallback(listener);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     public void onCancel(Object arguments) {
         Log.d(TAG, "onCancel");
         locationManager.unregisterGnssNavigationMessageCallback(listener);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    @RequiresApi(api = Build.VERSION_CODES.R)
     GnssNavigationMessage.Callback createSensorEventListener(final EventChannel.EventSink events) {
         return new GnssNavigationMessage.Callback() {
             @Override
