@@ -78,8 +78,11 @@ public class GnssAntennaInfoHandlerImpl implements EventChannel.StreamHandler {
                 for (int i=0; i < gnssAntennaInfos.size(); i++) {
                     final GnssAntennaInfo info = gnssAntennaInfos.get(i);
                     infoMap.put("id", i);
+                    infoMap.put("contents", info.describeContents());
                     infoMap.put("carrierFrequencyMHz", info.getCarrierFrequencyMHz());
-                    infoMap.put("PhaseCenterOffset", _phaseCenterOffsetToMap(info.getPhaseCenterOffset()));
+                    infoMap.put("phaseCenterOffset", _phaseCenterOffsetToMap(info.getPhaseCenterOffset()));
+                    infoMap.put("phaseCenterVariationCorrections", _correctionsToMap(info.getPhaseCenterVariationCorrections()));
+                    infoMap.put("signalGainCorrections", _correctionsToMap(info.getSignalGainCorrections()));
                     resultMap.put("antenna#" + i, infoMap);
                 }
 
@@ -96,6 +99,16 @@ public class GnssAntennaInfoHandlerImpl implements EventChannel.StreamHandler {
         resultMap.put("yOffsetUncertaintyMm", phaseCenterOffset.getYOffsetUncertaintyMm());
         resultMap.put("zOffsetMm", phaseCenterOffset.getZOffsetMm());
         resultMap.put("zOffsetUncertaintyMm", phaseCenterOffset.getZOffsetUncertaintyMm());
+
+        return  resultMap;
+    }
+
+    private  HashMap<String, Object> _correctionsToMap(GnssAntennaInfo.SphericalCorrections corrections) {
+        HashMap<String, Object> resultMap = new HashMap<String, Object>();
+        resultMap.put("correctionsArray", corrections.getCorrectionsArray());
+        resultMap.put("correctionUncertaintiesArray", corrections.getCorrectionUncertaintiesArray());
+        resultMap.put("deltaPhi", corrections.getDeltaPhi());
+        resultMap.put("deltaTheta", corrections.getDeltaTheta());
 
         return  resultMap;
     }
