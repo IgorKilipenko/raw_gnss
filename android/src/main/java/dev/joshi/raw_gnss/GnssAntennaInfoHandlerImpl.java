@@ -41,10 +41,12 @@ public class GnssAntennaInfoHandlerImpl implements EventChannel.StreamHandler {
     public void onListen(Object arguments, EventChannel.EventSink events) {
         Log.d(TAG, "onListen");
         listener = createSensorEventListener(events);
-        _hasPermissions = ActivityCompat.checkSelfPermission(_context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED;
+        _hasPermissions = /*ActivityCompat*/_context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED;
         if (_hasPermissions) {
-            Log.w(TAG, "Do't has permission - ACCESS_FINE_LOCATION");
+            final String msg = "Do't has permission - ACCESS_FINE_LOCATION";
+            Log.w(TAG, msg);
             listener = null;
+            events.error("PERMISSION_ERROR", msg, null);
             return;
         }
         try {
@@ -73,9 +75,11 @@ public class GnssAntennaInfoHandlerImpl implements EventChannel.StreamHandler {
             public void onGnssAntennaInfoReceived(@NonNull List<GnssAntennaInfo> gnssAntennaInfos) {
                 Log.d(TAG, "onGnssAntennaInfoReceived: " + gnssAntennaInfos.toString());
 
-                HashMap<String, Object> resultMap = new HashMap<>();
-                HashMap<String, Object> infoMap = new HashMap<>();
+                final HashMap<String, Object> resultMap = new HashMap<>();
+
                 for (int i=0; i < gnssAntennaInfos.size(); i++) {
+                    final HashMap<String, Object> infoMap = new HashMap<>();
+
                     final GnssAntennaInfo info = gnssAntennaInfos.get(i);
                     infoMap.put("id", i);
                     infoMap.put("contents", info.describeContents());
@@ -83,6 +87,8 @@ public class GnssAntennaInfoHandlerImpl implements EventChannel.StreamHandler {
                     infoMap.put("phaseCenterOffset", _phaseCenterOffsetToMap(info.getPhaseCenterOffset()));
                     infoMap.put("phaseCenterVariationCorrections", _correctionsToMap(info.getPhaseCenterVariationCorrections()));
                     infoMap.put("signalGainCorrections", _correctionsToMap(info.getSignalGainCorrections()));
+                    infoMap.put("string", info.toString());
+                    
                     resultMap.put("antenna#" + i, infoMap);
                 }
 
@@ -105,8 +111,8 @@ public class GnssAntennaInfoHandlerImpl implements EventChannel.StreamHandler {
 
     private  HashMap<String, Object> _correctionsToMap(GnssAntennaInfo.SphericalCorrections corrections) {
         HashMap<String, Object> resultMap = new HashMap<String, Object>();
-        resultMap.put("correctionsArray", corrections.getCorrectionsArray());
-        resultMap.put("correctionUncertaintiesArray", corrections.getCorrectionUncertaintiesArray());
+        //resultMap.put("correctionsArray", corrections.getCorrectionsArray());
+        //resultMap.put("correctionUncertaintiesArray", corrections.getCorrectionUncertaintiesArray());
         resultMap.put("deltaPhi", corrections.getDeltaPhi());
         resultMap.put("deltaTheta", corrections.getDeltaTheta());
 
