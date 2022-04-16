@@ -70,7 +70,7 @@ public class RawGnssPlugin implements FlutterPlugin  {
 
     final GnssAntennaInfoHandlerImpl gnssAntennaInfoStreamHandler =
             new GnssAntennaInfoHandlerImpl(locationManager, context);
-    gnssMeasurementChannel.setStreamHandler(gnssAntennaInfoStreamHandler);
+    gnssAntennaInfoChannel.setStreamHandler(gnssAntennaInfoStreamHandler);
 
   }
 
