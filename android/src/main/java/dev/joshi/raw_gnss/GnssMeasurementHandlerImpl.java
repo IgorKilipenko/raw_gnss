@@ -95,10 +95,12 @@ public class GnssMeasurementHandlerImpl implements EventChannel.StreamHandler {
                     map.put("accumulatedDeltaRangeMeters", measurement.getAccumulatedDeltaRangeMeters());
                     map.put("accumulatedDeltaRangeState", measurement.getAccumulatedDeltaRangeState());
                     map.put("accumulatedDeltaRangeUncertaintyMeters", measurement.getAccumulatedDeltaRangeUncertaintyMeters());
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    if (measurement.hasAutomaticGainControlLevelDb()) {
                         map.put("automaticGainControlLevelDb", measurement.getAutomaticGainControlLevelDb());
                     }
-                    map.put("carrierFrequencyHz", measurement.getCarrierFrequencyHz());
+                    if (measurement.hasCarrierFrequencyHz()) {
+                        map.put("carrierFrequencyHz", measurement.getCarrierFrequencyHz());
+                    }
                     map.put("cn0DbHz", measurement.getCn0DbHz());
                     map.put("constellationType", measurement.getConstellationType());
                     map.put("multipathIndicator", measurement.getMultipathIndicator());
@@ -106,11 +108,26 @@ public class GnssMeasurementHandlerImpl implements EventChannel.StreamHandler {
                     map.put("pseudorangeRateUncertaintyMetersPerSecond", measurement.getPseudorangeRateUncertaintyMetersPerSecond());
                     map.put("receivedSvTimeNanos", measurement.getReceivedSvTimeNanos());
                     map.put("receivedSvTimeUncertaintyNanos", measurement.getReceivedSvTimeUncertaintyNanos());
-                    map.put("snrInDb", measurement.getSnrInDb());
+                    if (measurement.hasSnrInDb()) {
+                        map.put("snrInDb", measurement.getSnrInDb());
+                    }
                     map.put("state", measurement.getState());
                     map.put("svid", measurement.getSvid());
                     map.put("timeOffsetNanos", measurement.getTimeOffsetNanos());
                     map.put("string", measurement.toString());
+                    // Add
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        map.put("accumulatedDeltaRangeMeters", measurement.getAccumulatedDeltaRangeMeters());
+                        map.put("accumulatedDeltaRangeState", measurement.getAccumulatedDeltaRangeState());
+                        map.put("accumulatedDeltaRangeUncertaintyMeters", measurement.getAccumulatedDeltaRangeUncertaintyMeters());
+                        map.put("basebandCn0DbHz", measurement.getBasebandCn0DbHz());
+                        if (measurement.hasFullInterSignalBiasNanos()) {
+                            map.put("fullInterSignalBiasNanos", measurement.getFullInterSignalBiasNanos());
+                        }
+                        if (measurement.hasFullInterSignalBiasUncertaintyNanos()) {
+                            map.put("fullInterSignalBiasUncertaintyNanos", measurement.getFullInterSignalBiasUncertaintyNanos());
+                        }
+                    }
 
                     measurementsMapList.add(map);
                 }
