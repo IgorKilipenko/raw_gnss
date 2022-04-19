@@ -12,28 +12,53 @@ import android.os.Parcelable;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 
 import java.sql.Array;
 import java.util.HashMap;
 import java.util.List;
-
+import android.app.Activity;
 import io.flutter.plugin.common.EventChannel;
+import io.flutter.plugin.common.BinaryMessenger;
 
 public class GnssAntennaInfoHandlerImpl implements EventChannel.StreamHandler {
     private static final String TAG = "GNSS_ANTENNA_INFO";
+    private  static  final  String GNSS_ANTENNA_INFO_CHANNEL_NAME = "dev.joshi.raw_gnss/gnss_antenna_info";
 
-    LocationManager locationManager;
+    private LocationManager locationManager;
     private Context _context;
-    GnssAntennaInfo.Listener listener;
+    private GnssAntennaInfo.Listener listener;
     private final Handler uiThreadHandler = new Handler(Looper.getMainLooper());
 
     private Boolean _hasPermissions = false;
+    @Nullable
+    private EventChannel channel = null;
 
     GnssAntennaInfoHandlerImpl(LocationManager manager, Context context) {
         locationManager = manager;
         _context = context;
+    }
+
+    public void startListening(BinaryMessenger messenger) {
+        if (channel != null) {
+            Log.wtf(TAG, "Setting a method call handler before the last was disposed.");
+            stopListening();
+        }
+
+        channel = new EventChannel(messenger, GNSS_ANTENNA_INFO_CHANNEL_NAME);
+        channel.setStreamHandler(this);
+    }
+
+    public void stopListening() {
+        if (channel == null) {
+            Log.d(TAG, "Tried to stop listening when no MethodChannel had been initialized.");
+            return;
+        }
+
+        channel.setStreamHandler(null);
+        channel = null;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.R)
