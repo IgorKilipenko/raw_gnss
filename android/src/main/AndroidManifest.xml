@@ -2,4 +2,12 @@
   package="dev.joshi.raw_gnss">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <application>
+        <service
+            android:name=".GnssMeasurementService"
+            android:enabled="true"
+            android:foregroundServiceType="location"
+            android:exported="false" />
+    </application>
 </manifest>
