@@ -18,7 +18,7 @@ class RawGnss {
 
   Stream<GnssMeasurementModel>? _gnssMeasurementEvents;
   Stream? _gnssNavigationMessageEvents;
-  Stream? _gnssAntennaInfoEvents;
+  Stream<Map<String, dynamic>>? _gnssAntennaInfoEvents;
 
   /// Getter for GnssMeasurement events
   Stream<GnssMeasurementModel> get gnssMeasurementEvents {
@@ -43,8 +43,10 @@ class RawGnss {
   /// Getter for GnssAntennaInfo events
   Stream get gnssAntennaInfoEvents {
     if (_gnssAntennaInfoEvents == null) {
-       _gnssAntennaInfoEvents =
-          _gnssAntennaInfoEventChannel.receiveBroadcastStream();
+      _gnssAntennaInfoEvents = _gnssAntennaInfoEventChannel
+          .receiveBroadcastStream()
+          .map((event) => (event as Map<dynamic, dynamic>).map<String, dynamic>(
+              (key, value) => MapEntry(key.toString(), value)));
     }
     return _gnssAntennaInfoEvents!;
   }
