@@ -166,7 +166,7 @@ public class RawGnssPlugin implements FlutterPlugin, ActivityAware {
     activityBinding.addRequestPermissionsResultListener(measurementService.getServiceRequestPermissionsResultListener());
     if (gnssMeasurementStreamHandler != null) {
       gnssMeasurementStreamHandler.setMeasurement(measurementService.getMeasurement());
-      //enableBackgroundMode();
+      enableBackgroundMode();
     }
   }
 

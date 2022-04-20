@@ -87,8 +87,20 @@ class BackgroundNotification {
            return null;
         }
     }
+
+    private void updateChannel(String channelName) {
+        final NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        final NotificationChannel channel = new NotificationChannel(
+                channelId,
+                channelName,
+                NotificationManager.IMPORTANCE_NONE
+        );
+        channel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+        notificationManager.createNotificationChannel(channel);
+    }
+
     Notification build() {
-        //updateChannel(options.channelName)
+        updateChannel(kDefaultChannelName);
         return builder.build();
     }
 }
