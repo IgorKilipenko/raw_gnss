@@ -351,11 +351,9 @@ public class FlutterGnssMeasurement implements PluginRegistry.RequestPermissions
                     map.put("svid", measurement.getSvid());
                     map.put("timeOffsetNanos", measurement.getTimeOffsetNanos());
                     map.put("string", measurement.toString());
-                    // Add
+                    // Add                   
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        map.put("accumulatedDeltaRangeMeters", measurement.getAccumulatedDeltaRangeMeters());
-                        map.put("accumulatedDeltaRangeState", measurement.getAccumulatedDeltaRangeState());
-                        map.put("accumulatedDeltaRangeUncertaintyMeters", measurement.getAccumulatedDeltaRangeUncertaintyMeters());
+
                         map.put("basebandCn0DbHz", measurement.getBasebandCn0DbHz());
                         if (measurement.hasFullInterSignalBiasNanos()) {
                             map.put("fullInterSignalBiasNanos", measurement.getFullInterSignalBiasNanos());
